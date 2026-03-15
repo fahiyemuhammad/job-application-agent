@@ -38,10 +38,8 @@ COVER LETTER TO IMPROVE:
 
     improved = llm.invoke(prompt)
 
-    # Strip any trailing commentary the LLM might add despite instructions
     letter_text = improved.content.strip()
 
-    # Heuristic: cut off anything after common commentary starters
     cutoff_phrases = [
         "improvements made",
         "changes made",

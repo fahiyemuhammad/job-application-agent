@@ -29,13 +29,11 @@ def scrape_job_posting(url: str, max_chars: int = 8000) -> dict:
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
 
-        # Remove script/style/nav noise
         for tag in soup(["script", "style", "nav", "footer", "header", "meta", "noscript"]):
             tag.decompose()
 
         title = soup.title.string.strip() if soup.title else "Unknown Title"
 
-        # Prefer job-specific containers if they exist
         job_containers = soup.find_all(
             attrs={
                 "class": re.compile(
@@ -48,7 +46,6 @@ def scrape_job_posting(url: str, max_chars: int = 8000) -> dict:
         if job_containers:
             raw = " ".join(c.get_text(separator="\n") for c in job_containers)
         else:
-            # Fall back to all meaningful text tags
             tags = soup.find_all(["p", "li", "h1", "h2", "h3", "h4", "span", "div"])
             raw = "\n".join(t.get_text(separator=" ") for t in tags)
 

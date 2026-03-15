@@ -41,7 +41,6 @@ def main():
     state = {
         "resume_text": resume_text,
         "user_input": user_input,
-        # Pre-fill optional keys so StateGraph doesn't complain
         "input_type": "",
         "job_description": "",
         "scraped_job_title": "",

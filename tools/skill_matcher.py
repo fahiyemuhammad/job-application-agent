@@ -10,7 +10,6 @@ def _fuzzy_match(a: str, b: str, threshold: float = 0.82) -> bool:
     a, b = _normalize(a), _normalize(b)
     if a == b:
         return True
-    # Check if one contains the other (handles "AWS" vs "Amazon Web Services (AWS)")
     if a in b or b in a:
         return True
     ratio = SequenceMatcher(None, a, b).ratio()

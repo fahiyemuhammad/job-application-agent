@@ -70,7 +70,6 @@ Make it sound like a real job posting.
     elif input_type == "job_description":
         description = user_input
 
-    # Fallback
     if not description or len(description.strip()) < 50:
         description = FALLBACK_DESCRIPTION
 

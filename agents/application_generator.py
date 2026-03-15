@@ -19,7 +19,6 @@ def application_generator(state: dict) -> dict:
     job_description = state["job_description"]
     personal_info = state.get("personal_info", {})
 
-    # Skill matching
     match_results = match_skills(resume_skills, job_skills)
     state["match_results"] = match_results
 
@@ -27,13 +26,11 @@ def application_generator(state: dict) -> dict:
     missing = match_results["missing_skills"]
     score = match_results["match_score"]
 
-    # Resolve personal details
     candidate_name = personal_info.get("name") or "the applicant"
     candidate_email = personal_info.get("email") or ""
     candidate_phone = personal_info.get("phone") or ""
     today = date.today().strftime("%B %d, %Y")
 
-    # Try to get company name from scraped title or user input
     company_name = state.get("scraped_job_title", "") or state.get("user_input", "the company")
 
     prompt = f"""You are a professional career coach writing a cover letter on behalf of a job applicant.

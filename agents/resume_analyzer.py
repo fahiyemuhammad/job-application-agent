@@ -13,11 +13,9 @@ def resume_analyzer(state: dict) -> dict:
     """
     resume_text = state["resume_text"]
 
-    # --- Extract personal info via regex ---
     personal_info = extract_personal_info(resume_text)
     state["personal_info"] = personal_info
 
-    # --- Extract skills via LLM ---
     prompt = f"""You are a resume parser. Extract ALL technical and professional skills from the resume below.
 
 Include: programming languages, frameworks, tools, platforms, methodologies, soft skills relevant to tech roles.

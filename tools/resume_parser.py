@@ -26,23 +26,19 @@ def extract_personal_info(resume_text: str) -> dict:
     """
     info = {"name": "", "email": "", "phone": ""}
 
-    # Email
     email_match = re.search(r"[\w\.-]+@[\w\.-]+\.\w+", resume_text)
     if email_match:
         info["email"] = email_match.group()
 
-    # Phone (handles various formats)
     phone_match = re.search(
         r"(\+?\d[\d\s\-().]{7,}\d)", resume_text
     )
     if phone_match:
         info["phone"] = phone_match.group().strip()
 
-    # Name: assume it's the first non-empty line of the resume
     lines = [l.strip() for l in resume_text.splitlines() if l.strip()]
     if lines:
         first_line = lines[0]
-        # Likely a name if it's short and has no digits
         if len(first_line.split()) <= 5 and not re.search(r"\d", first_line):
             info["name"] = first_line
 
