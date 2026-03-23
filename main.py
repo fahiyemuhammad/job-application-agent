@@ -22,7 +22,7 @@ def main():
     try:
         resume_text = parse_resume(resume_path)
     except Exception as e:
-        print(f"❌ Could not parse resume: {e}")
+        print(f" Could not parse resume: {e}")
         sys.exit(1)
 
     # --- Job input ---
@@ -34,7 +34,7 @@ def main():
     user_input = input("\nYour input: ").strip()
 
     if not user_input:
-        print("❌ No input provided.")
+        print(" No input provided.")
         sys.exit(1)
 
     # --- Build & run graph ---
@@ -67,7 +67,7 @@ def main():
     print_section("FINAL COVER LETTER", result.get("improved_cover_letter", ""))
 
     # Optionally save to file
-    save = input("\n💾 Save cover letter to file? (y/n): ").strip().lower()
+    save = input("\n Save cover letter to file? (y/n): ").strip().lower()
     if save == "y":
         out_path = "cover_letter.txt"
         with open(out_path, "w") as f:

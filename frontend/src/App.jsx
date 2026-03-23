@@ -17,6 +17,7 @@ export default function App() {
     setResults(null)
     setPage('upload')
   }
+ 
 
   return (
     <>
