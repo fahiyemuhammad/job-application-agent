@@ -141,7 +141,7 @@ echo "GROQ_API_KEY=your_groq_api_key_here" > .env
 
 ### 4. Option A — Run via the terminal (CLI mode)
 
-This is the original way the project was used before the frontend was built. It prompts you for input directly in the terminal and prints the cover letter to the console.
+This is the original way the project was used before I built the frontend. It prompts you for input directly in the terminal and prints the cover letter to the console.
 
 ```bash
 python main.py

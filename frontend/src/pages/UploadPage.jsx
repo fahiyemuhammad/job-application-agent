@@ -57,7 +57,7 @@ export default function UploadPage({ onResults }) {
       formData.append('resume', resumeFile)
       formData.append('job_input', jobInput.trim())
 
-    const res = await axios.post('https://web-production-cb155.up.railway.app/analyze', formData, {
+      const res = await axios.post('https://fahiye-applyai-backend.hf.space/analyze', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         timeout: 120000,
       })
