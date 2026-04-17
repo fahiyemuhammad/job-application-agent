@@ -1,8 +1,14 @@
+import os
+from dotenv import load_dotenv
 import json
 from langchain_groq import ChatGroq
 from tools.resume_parser import extract_personal_info
 
-llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0)
+load_dotenv()
+
+key = os.getenv("GROQ_API_KEY")
+
+llm = ChatGroq(api_key=key, model="llama-3.1-8b-instant", temperature=0)
 
 
 def resume_analyzer(state: dict) -> dict:

@@ -1,8 +1,14 @@
+import os
+from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 from tools.skill_matcher import match_skills
 from datetime import date
 
-llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0.4)
+load_dotenv()
+
+key = os.getenv("GROQ_API_KEY")
+
+llm = ChatGroq(api_key= key, model="llama-3.1-8b-instant", temperature=0.4)
 
 
 def application_generator(state: dict) -> dict:

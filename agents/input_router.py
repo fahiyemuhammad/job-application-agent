@@ -1,7 +1,13 @@
+import os
+from dotenv import load_dotenv
 import re
 from langchain_groq import ChatGroq
 
-llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0)
+load_dotenv()
+
+key = os.getenv("GROQ_API_KEY")
+
+llm = ChatGroq(api_key=key, model="llama-3.1-8b-instant", temperature=0)
 
 JOB_URL_PATTERNS = re.compile(
     r"(jobs|careers|job|career|position|vacancy|opening|posting|apply|recruitment|hire)",

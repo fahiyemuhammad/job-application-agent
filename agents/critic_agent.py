@@ -1,6 +1,12 @@
+import os
+from dotenv import load_dotenv
 from langchain_groq import ChatGroq
 
-llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0.3)
+load_dotenv()
+
+key = os.getenv("GROQ_API_KEY")
+
+llm = ChatGroq(api_key=key, model="llama-3.3-70b-versatile", temperature=0.3)
 
 
 def critic_agent(state: dict) -> dict:

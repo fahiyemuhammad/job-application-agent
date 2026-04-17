@@ -1,8 +1,13 @@
+import os
 import json
 from langchain_groq import ChatGroq
 from tools.job_scraper import scrape_job_posting
+from dotenv import load_dotenv
 
-llm = ChatGroq(model="llama-3.1-8b-instant", temperature=0)
+load_dotenv()
+key = os.getenv("GROQ_API_KEY")
+
+llm = ChatGroq(api_key=key , model="llama-3.1-8b-instant", temperature=0)
 
 FALLBACK_DESCRIPTION = (
     "Software engineer role requiring Python, REST APIs, cloud platforms, "
