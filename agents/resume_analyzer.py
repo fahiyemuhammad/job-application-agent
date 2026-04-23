@@ -14,24 +14,24 @@ llm = ChatGroq(api_key=key, model="llama-3.1-8b-instant", temperature=0)
 def resume_analyzer(state: dict) -> dict:
     """
     Extracts:
-      - technical skills (as a JSON list)
-      - personal info (name, email, phone) for cover letter
+      - technical and professional skills (industry-agnostic)
+      - personal info (name, email, phone)
     """
     resume_text = state["resume_text"]
 
     personal_info = extract_personal_info(resume_text)
     state["personal_info"] = personal_info
 
-    prompt = f"""You are a high-fidelity resume parser. Your goal is to extract a comprehensive list of technical and professional skills from the resume text provided.
+    prompt = f"""You are a high-fidelity resume parser. Your goal is to extract a comprehensive list of professional competencies and skills from the resume text provided.
 
 STRICT GUIDELINES:
-1. Extract ONLY skills that are explicitly mentioned or clearly evidenced in the resume.
-2. DO NOT include common industry skills (like "Agile", "Docker", "REST APIs", "AWS") unless they are actually in the text.
-3. Include: programming languages, software tools, frameworks, technical platforms, and industry-specific certifications.
-4. Normalize name variations (e.g., "Javascript" to "JavaScript").
+1. Extract ONLY skills, tools, and competencies that are explicitly mentioned or clearly evidenced in the resume.
+2. DO NOT hallucinate common industry skills (e.g., "Agile", "Docker", "AWS") if they are missing.
+3. BE INDUSTRY-AGNOSTIC: Include laboratory techniques, medical technologies, sales methodologies, educational strategies, or any other domain-specific skills.
+4. Categories to include: Hard Skills, Soft Skills, Specific Tools/Software, Industry Standards, Certifications, and Languages.
 
 Return ONLY a valid JSON array of strings.
-Example: ["Skill A", "Skill B", "Skill C"]
+Example: ["Critical Thinking", "Laboratory Research", "Project Management", "Python"]
 
 Resume Text:
 ---

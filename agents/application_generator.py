@@ -39,9 +39,9 @@ def application_generator(state: dict) -> dict:
 
     company_name = state.get("scraped_job_title", "") or state.get("user_input", "the company")
 
-    prompt = f"""You are a professional career coach writing a cover letter on behalf of a job applicant.
+    prompt = f"""You are a professional career coach writing a cover letter on behalf of an applicant. Your goal is to highlight the candidate's most relevant skills and experiences for the role, regardless of the industry.
 
-APPLICANT DETAILS (from their resume):
+APPLICANT DETAILS:
 Name: {candidate_name}
 Email: {candidate_email}
 Phone: {candidate_phone}
@@ -54,21 +54,17 @@ JOB DESCRIPTION:
 {job_description}
 
 SKILL MATCH ANALYSIS:
-- Matched skills ({score}% match): {", ".join(matched) if matched else "none identified"}
-- Skills to address positively: {", ".join(missing[:6]) if missing else "none"}
+- Matched competencies ({score}% match): {", ".join(matched) if matched else "none identified"}
+- Gaps to bridge: {", ".join(missing[:6]) if missing else "none"}
 
 INSTRUCTIONS:
-- Write a complete, professional cover letter addressed to the Hiring Manager.
-- GROUNDING: Only mention skills and experiences that are explicitly found in the FULL RESUME provided. Do not invent achievements.
-- Use the applicant's REAL name, email, and phone — never use placeholders like [Your Name].
-- Fill the company name from context (job description or URL content); if unclear use "your organization".
-- In the opening paragraph, show genuine enthusiasm for the specific role/company.
-- In the body, highlight 2–3 specific achievements or experiences from the resume that are most relevant.
-- For missing skills, briefly acknowledge eagerness to grow in those areas — do NOT dwell on gaps.
+- Write a professional cover letter that is highly tailored to the specific industry and role.
+- GROUNDING: Support Every claim with evidence from the FULL RESUME. Do not invent skills or experience.
+- If the role is non-technical (e.g. Biomedical, Sales, Education), use the appropriate professional tone and terminology.
+- Use the applicant's REAL contact info.
+- Fill the company name from context.
 - Keep tone confident, warm, and professional.
-- Length: 3–4 paragraphs, no bullet points inside the letter.
-- End with a clear call to action.
-- Output ONLY the cover letter text — no preamble.
+- Output ONLY the cover letter text.
 """
 
     response = llm.invoke(prompt)
