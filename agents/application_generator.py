@@ -59,7 +59,8 @@ SKILL MATCH ANALYSIS:
 
 INSTRUCTIONS:
 - Write a professional cover letter that is highly tailored to the specific industry and role.
-- GROUNDING: Support Every claim with evidence from the FULL RESUME. Do not invent skills or experience.
+- GROUNDING: Support EVERY claim with evidence from the FULL RESUME. Do not invent skills or experience.
+- EXPERIENCE GUARD: Do NOT calculate or state total years of experience (e.g., "5+ years") unless it is explicitly written on the resume. Stick to specific dates and role durations mentioned.
 - If the role is non-technical (e.g. Biomedical, Sales, Education), use the appropriate professional tone and terminology.
 - Use the applicant's REAL contact info.
 - Fill the company name from context.

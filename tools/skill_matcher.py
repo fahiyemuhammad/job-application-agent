@@ -1,3 +1,4 @@
+import re
 from difflib import SequenceMatcher
 
 
@@ -5,13 +6,35 @@ def _normalize(skill: str) -> str:
     return skill.lower().strip()
 
 
-def _fuzzy_match(a: str, b: str, threshold: float = 0.82) -> bool:
-    """Returns True if two skill strings are similar enough."""
+def _fuzzy_match(a: str, b: str, threshold: float = 0.90) -> bool:
+    """Returns True if two skill strings are similar enough, with precision for distinct languages."""
     a, b = _normalize(a), _normalize(b)
     if a == b:
         return True
-    if a in b or b in a:
+    
+    # Specific guards for common distinct languages/tools that are substrings
+    distinct_pairs = [
+        {"java", "javascript"},
+        {"c", "c++"},
+        {"c", "c#"},
+        {"sql", "nosql"},
+        {"python", "cython"},
+    ]
+    for pair in distinct_pairs:
+        if a in pair and b in pair:
+            return False
+
+    # Check for inclusion with word boundaries or common extensions
+    a_clean = a.replace(".js", "").replace(".py", "").strip()
+    b_clean = b.replace(".js", "").replace(".py", "").strip()
+    if a_clean == b_clean:
         return True
+
+    # Check if one is a whole word in the other
+    pattern = r"\b" + re.escape(a) + r"\b"
+    if re.search(pattern, b) or re.search(r"\b" + re.escape(b) + r"\b", a):
+        return True
+
     ratio = SequenceMatcher(None, a, b).ratio()
     return ratio >= threshold
 
