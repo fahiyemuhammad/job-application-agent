@@ -1,16 +1,30 @@
 import { useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
+import { motion, AnimatePresence } from 'framer-motion'
 import toast from 'react-hot-toast'
-import { Upload, FileText, Link2, Building2, AlignLeft, ChevronRight, X, Loader2 } from 'lucide-react'
+import { Upload, FileText, Link2, Building2, AlignLeft, ChevronRight, X, Loader2, Sparkles } from 'lucide-react'
 import axios from 'axios'
 import './UploadPage.css'
 
 const INPUT_TYPES = [
-  { id: 'url',     label: 'Job Posting URL',       icon: Link2,     placeholder: 'https://careers.company.com/job/...' },
-  { id: 'company', label: 'Company Website',        icon: Building2, placeholder: 'https://company.com' },
-  { id: 'name',    label: 'Company Name',           icon: Building2, placeholder: 'e.g. Google, Anthropic, Safaricom' },
-  { id: 'text',    label: 'Paste Job Description',  icon: AlignLeft, placeholder: 'Paste the full job description here...', multiline: true },
+  { id: 'url',     label: 'Job URL',       icon: Link2,     placeholder: 'https://careers.company.com/job/...' },
+  { id: 'company', label: 'Website',       icon: Building2, placeholder: 'https://company.com' },
+  { id: 'name',    label: 'Company',       icon: Building2, placeholder: 'e.g. Google, Anthropic' },
+  { id: 'text',    label: 'Job Text',      icon: AlignLeft, placeholder: 'Paste the full job description here...', multiline: true },
 ]
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { 
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+}
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: { y: 0, opacity: 1 }
+}
 
 export default function UploadPage({ onResults }) {
   const [resumeFile, setResumeFile] = useState(null)
@@ -22,7 +36,7 @@ export default function UploadPage({ onResults }) {
   const onDrop = useCallback((accepted) => {
     if (accepted[0]) {
       setResumeFile(accepted[0])
-      toast.success(`Loaded: ${accepted[0].name}`)
+      toast.success(`Résumé loaded: ${accepted[0].name}`)
     }
   }, [])
 
@@ -30,27 +44,27 @@ export default function UploadPage({ onResults }) {
     onDrop,
     accept: { 'application/pdf': ['.pdf'] },
     maxFiles: 1,
-    onDropRejected: () => toast.error('Please upload a PDF file'),
+    onDropRejected: () => toast.error('Please upload a PDF résumé'),
   })
 
   async function handleSubmit() {
-    if (!resumeFile) return toast.error('Please upload your resume')
-    if (!jobInput.trim()) return toast.error('Please enter job details')
+    if (!resumeFile) return toast.error('Please upload your résumé')
+    if (!jobInput.trim()) return toast.error('Please provide job details')
 
     setLoading(true)
     const steps = [
-      'Parsing your resume…',
-      'Researching the role…',
-      'Matching your skills…',
-      'Crafting your cover letter…',
-      'Polishing final draft…',
+      'Scanning résumé...',
+      'Analyzing job requirements...',
+      'Calculating skill match...',
+      'Generating cover letter...',
+      'Finalizing results...',
     ]
     let i = 0
     setLoadingStep(steps[0])
     const interval = setInterval(() => {
       i = (i + 1) % steps.length
       setLoadingStep(steps[i])
-    }, 2800)
+    }, 2500)
 
     try {
       const formData = new FormData()
@@ -63,126 +77,184 @@ export default function UploadPage({ onResults }) {
       })
       onResults(res.data)
     } catch (err) {
-      const msg = err.response?.data?.detail || 'Something went wrong. Please try again.'
-      toast.error(msg)
+      toast.error(err.response?.data?.detail || 'Analysis failed. Please try again.')
     } finally {
       clearInterval(interval)
       setLoading(false)
-      setLoadingStep('')
     }
   }
 
   const active = INPUT_TYPES.find(t => t.id === inputType)
 
   return (
-    <div className="upload-page">
-      <div className="upload-hero">
-        <p className="upload-eyebrow">AI-powered job applications</p>
-        <h1 className="upload-headline">
-          Your next role,<br />
-          <em>perfectly framed.</em>
-        </h1>
-        <p className="upload-subline">
-          Upload your CV, point us to a job — we'll match your skills and
-          write a tailored cover letter in seconds.
-        </p>
-      </div>
+    <motion.div 
+      className="upload-page"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
+      <div className="upload-glow" />
+      
+      <header className="upload-header">
+        <motion.div variants={itemVariants} className="badge">
+          <Sparkles size={12} />
+          <span>Next-Gen Career Agent</span>
+        </motion.div>
+        
+        <motion.h1 variants={itemVariants} className="hero-title">
+          Master the <span className="gradient-text">Application.</span>
+        </motion.h1>
+        
+        <motion.p variants={itemVariants} className="hero-sub">
+          Our AI analyzes your skills against any job posting to craft 
+          the perfect profile & cover letter instantly.
+        </motion.p>
+      </header>
 
-      <div className="upload-card">
-
-        {/* Step 1 */}
-        <div className="upload-section">
-          <div className="upload-step-label">
-            <span className="upload-step-num">1</span>
-            Upload your résumé
+      <motion.div variants={itemVariants} className="main-card-container">
+        <div className="glass-card upload-card">
+          {/* Section 1: Resume */}
+          <div className="card-section">
+            <h2 className="section-label">
+              <span className="step-num">01</span>
+              Upload your Résumé
+            </h2>
+            
+            <div
+              {...getRootProps()}
+              className={`dropzone ${isDragActive ? 'active' : ''} ${resumeFile ? 'filled' : ''}`}
+            >
+              <input {...getInputProps()} />
+              <AnimatePresence mode="wait">
+                {resumeFile ? (
+                  <motion.div 
+                    key="file"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="file-info"
+                  >
+                    <div className="file-icon-box">
+                      <FileText size={24} />
+                    </div>
+                    <div className="file-details">
+                      <p className="file-name">{resumeFile.name}</p>
+                      <p className="file-meta">{(resumeFile.size / 1024).toFixed(0)} KB · PDF</p>
+                    </div>
+                    <button
+                      className="remove-btn"
+                      onClick={e => { e.stopPropagation(); setResumeFile(null) }}
+                    >
+                      <X size={16} />
+                    </button>
+                  </motion.div>
+                ) : (
+                  <motion.div 
+                    key="hint"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="drop-hint"
+                  >
+                    <div className="upload-icon-circle">
+                      <Upload size={24} />
+                    </div>
+                    <p className="hint-main">
+                      {isDragActive ? 'Drop your file here' : 'Drop your résumé PDF'}
+                    </p>
+                    <p className="hint-sub">or click to browse local files</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
-          <div
-            {...getRootProps()}
-            className={`dropzone ${isDragActive ? 'dropzone-active' : ''} ${resumeFile ? 'dropzone-filled' : ''}`}
-          >
-            <input {...getInputProps()} />
-            {resumeFile ? (
-              <div className="file-info">
-                <FileText size={22} className="file-icon" />
-                <div>
-                  <p className="file-name">{resumeFile.name}</p>
-                  <p className="file-size">{(resumeFile.size / 1024).toFixed(0)} KB · PDF</p>
-                </div>
+          <div className="divider" />
+
+          {/* Section 2: Job Info */}
+          <div className="card-section">
+            <h2 className="section-label">
+              <span className="step-num">02</span>
+              Identify the Role
+            </h2>
+
+            <div className="tab-switcher">
+              {INPUT_TYPES.map(t => (
                 <button
-                  className="file-remove"
-                  onClick={e => { e.stopPropagation(); setResumeFile(null) }}
+                  key={t.id}
+                  className={`tab-btn ${inputType === t.id ? 'active' : ''}`}
+                  onClick={() => { setInputType(t.id); setJobInput('') }}
                 >
-                  <X size={15} />
+                  <t.icon size={14} />
+                  <span>{t.label}</span>
+                  {inputType === t.id && (
+                    <motion.div layoutId="activeTab" className="active-tab-indicator" />
+                  )}
                 </button>
-              </div>
-            ) : (
-              <div className="drop-hint">
-                <div className="drop-icon"><Upload size={22} /></div>
-                <p className="drop-text">{isDragActive ? 'Drop it here' : 'Drag & drop your PDF résumé'}</p>
-                <p className="drop-sub">or <span className="drop-browse">click to browse</span></p>
+              ))}
+            </div>
+
+            <div className="input-wrap">
+              {active.multiline ? (
+                <textarea
+                  className="modern-textarea"
+                  placeholder={active.placeholder}
+                  value={jobInput}
+                  onChange={e => setJobInput(e.target.value)}
+                  rows={5}
+                />
+              ) : (
+                <div className="modern-input-group">
+                  <input
+                    className="modern-input"
+                    type="text"
+                    placeholder={active.placeholder}
+                    value={jobInput}
+                    onChange={e => setJobInput(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && handleSubmit()}
+                  />
+                  <div className="input-glow" />
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Action Footer */}
+          <div className="card-footer">
+            <motion.button 
+              className="magic-btn" 
+              onClick={handleSubmit} 
+              disabled={loading}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+            >
+              <div className="btn-glow" />
+              {loading ? (
+                <div className="loading-state">
+                  <Loader2 size={18} className="spinner" />
+                  <span>{loadingStep}</span>
+                </div>
+              ) : (
+                <div className="btn-content">
+                  <span>Generate AI Analysis</span>
+                  <ChevronRight size={18} />
+                </div>
+              )}
+            </motion.button>
+            
+            {loading && (
+              <div className="loading-bar-outer">
+                <motion.div 
+                  className="loading-bar-inner"
+                  initial={{ width: "0%" }}
+                  animate={{ width: "100%" }}
+                  transition={{ duration: 15, ease: "linear" }}
+                />
               </div>
             )}
           </div>
         </div>
-
-        <div className="upload-divider" />
-
-        {/* Step 2 */}
-        <div className="upload-section">
-          <div className="upload-step-label">
-            <span className="upload-step-num">2</span>
-            Tell us about the role
-          </div>
-
-          <div className="type-grid">
-            {INPUT_TYPES.map(t => (
-              <button
-                key={t.id}
-                className={`type-btn ${inputType === t.id ? 'type-btn-active' : ''}`}
-                onClick={() => { setInputType(t.id); setJobInput('') }}
-              >
-                <t.icon size={14} />
-                {t.label}
-              </button>
-            ))}
-          </div>
-
-          {active.multiline ? (
-            <textarea
-              className="job-textarea"
-              placeholder={active.placeholder}
-              value={jobInput}
-              onChange={e => setJobInput(e.target.value)}
-              rows={6}
-            />
-          ) : (
-            <input
-              className="job-input"
-              type="text"
-              placeholder={active.placeholder}
-              value={jobInput}
-              onChange={e => setJobInput(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleSubmit()}
-            />
-          )}
-        </div>
-
-        {/* Submit */}
-        <button className="submit-btn" onClick={handleSubmit} disabled={loading}>
-          {loading ? (
-            <><Loader2 size={17} className="submit-spinner" />{loadingStep}</>
-          ) : (
-            <>Generate cover letter<ChevronRight size={17} /></>
-          )}
-        </button>
-
-        {loading && (
-          <div className="progress-bar">
-            <div className="progress-fill" />
-          </div>
-        )}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   )
 }

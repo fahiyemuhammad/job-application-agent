@@ -1,13 +1,27 @@
 import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import toast from 'react-hot-toast'
 import {
   CheckCircle2, XCircle, Download, Copy, RefreshCw,
-  TrendingUp, AlertCircle, Sparkles, ChevronDown, ChevronUp
+  TrendingUp, AlertCircle, Sparkles, ChevronDown, ChevronUp, FileText, Zap
 } from 'lucide-react'
 import './ResultsPage.css'
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: { 
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+}
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: { y: 0, opacity: 1 }
+}
+
 function ScoreRing({ score }) {
-  const radius = 44
+  const radius = 42
   const circ = 2 * Math.PI * radius
   const offset = circ - (score / 100) * circ
   const color =
@@ -16,33 +30,45 @@ function ScoreRing({ score }) {
     'var(--danger)'
 
   return (
-    <div className="score-ring">
-      <svg width="110" height="110" viewBox="0 0 110 110">
-        <circle cx="55" cy="55" r={radius} fill="none" stroke="var(--border)" strokeWidth="8" />
-        <circle
-          cx="55" cy="55" r={radius} fill="none"
-          stroke={color} strokeWidth="8"
+    <div className="modern-score-ring">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r={radius} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="10" />
+        <motion.circle
+          cx="60" cy="60" r={radius} fill="none"
+          stroke={color} strokeWidth="10"
           strokeLinecap="round"
           strokeDasharray={circ}
-          strokeDashoffset={offset}
-          transform="rotate(-90 55 55)"
-          style={{ transition: 'stroke-dashoffset 1.2s ease' }}
+          initial={{ strokeDashoffset: circ }}
+          animate={{ strokeDashoffset: offset }}
+          transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
+          transform="rotate(-90 60 60)"
         />
       </svg>
-      <div className="score-inner">
-        <span className="score-num" style={{ color }}>{score}%</span>
-        <span className="score-label">match</span>
+      <div className="score-content">
+        <motion.span 
+          className="score-value"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1 }}
+        >
+          {score}%
+        </motion.span>
+        <span className="score-text">Match</span>
       </div>
+      <div className="ring-glow" style={{ background: color }} />
     </div>
   )
 }
 
 function SkillPill({ skill, type }) {
   return (
-    <span className={`skill-pill ${type === 'matched' ? 'pill-green' : 'pill-red'}`}>
-      {type === 'matched' ? <CheckCircle2 size={11} /> : <XCircle size={11} />}
-      {skill}
-    </span>
+    <motion.div 
+      className={`skill-item ${type}`}
+      whileHover={{ scale: 1.05 }}
+    >
+      {type === 'matched' ? <CheckCircle2 size={13} /> : <XCircle size={13} />}
+      <span>{skill}</span>
+    </motion.div>
   )
 }
 
@@ -74,103 +100,137 @@ export default function ResultsPage({ results, onReset }) {
   }
 
   const verdict =
-    score >= 70 ? { text: 'Strong match',   Icon: TrendingUp,   cls: 'verdict-green'  } :
-    score >= 40 ? { text: 'Moderate match', Icon: AlertCircle,  cls: 'verdict-yellow' } :
-                  { text: 'Low match',      Icon: XCircle,      cls: 'verdict-red'    }
+    score >= 70 ? { text: 'High Potential', Icon: Zap, color: 'var(--success)' } :
+    score >= 40 ? { text: 'Good Fit',       Icon: TrendingUp, color: 'var(--warning)' } :
+                  { text: 'Low Correlation', Icon: AlertCircle, color: 'var(--danger)' }
 
   return (
-    <div className="results-page">
-
-      {/* Header */}
-      <div className="results-header">
-        <div className="results-header-left">
-          <span className="results-eyebrow"><Sparkles size={13} /> Results ready</span>
-          <h1 className="results-title">Your application package</h1>
-          <p className="results-subtitle">Review your skill match and personalised cover letter below.</p>
-        </div>
-        <button className="results-reset-btn" onClick={onReset}>
-          <RefreshCw size={14} /> Start over
-        </button>
+    <motion.div 
+      className="results-container"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
+      <div className="results-bg-glow" />
+      
+      {/* Top Header */}
+      <div className="results-top-bar">
+        <motion.div variants={itemVariants} className="results-header-info">
+          <div className="results-badge">
+            <Sparkles size={12} />
+            <span>Analysis Complete</span>
+          </div>
+          <h1 className="results-title">Application Dashboard</h1>
+        </motion.div>
+        
+        <motion.button 
+          variants={itemVariants} 
+          className="restart-btn" 
+          onClick={onReset}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <RefreshCw size={14} />
+          <span>New Session</span>
+        </motion.button>
       </div>
 
-      {/* Grid */}
-      <div className="results-grid">
-
-        {/* Left column */}
-        <div className="results-left-col">
-
-          {/* Score card */}
-          <div className="results-card">
-            <h2 className="card-title">Skill match score</h2>
-            <div className="score-row">
+      <div className="dashboard-grid">
+        {/* Sidebar / Top Section */}
+        <div className="dashboard-sidebar">
+          {/* Match Score Card */}
+          <motion.div variants={itemVariants} className="glass-card stat-card">
+            <div className="stat-header">
+              <h3 className="card-lbl">Skill Correlation</h3>
+              <div className="verdict-tag" style={{ color: verdict.color, background: `${verdict.color}15` }}>
+                <verdict.Icon size={14} />
+                <span>{verdict.text}</span>
+              </div>
+            </div>
+            
+            <div className="score-display">
               <ScoreRing score={score} />
-              <div>
-                <span className={`verdict ${verdict.cls}`}>
-                  <verdict.Icon size={14} />
-                  {verdict.text}
-                </span>
-                <p className="score-desc">
-                  {matched.length} of {matched.length + missing.length} required skills found in your résumé.
-                </p>
-              </div>
+              <p className="score-insight">
+                We found <strong>{matched.length}</strong> core competencies that align with this role requirements.
+              </p>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Matched skills */}
-          {matched.length > 0 && (
-            <div className="results-card">
-              <h2 className="card-title">
-                <CheckCircle2 size={15} color="var(--success)" /> Matched skills
-              </h2>
-              <div className="pill-wrap">
-                {matched.map(s => <SkillPill key={s} skill={s} type="matched" />)}
-              </div>
+          {/* Matched Skills */}
+          <motion.div variants={itemVariants} className="glass-card skills-card">
+            <div className="card-head">
+              <CheckCircle2 size={16} className="text-success" />
+              <h3>Identified Strengths</h3>
             </div>
-          )}
+            <div className="skills-flex">
+              <AnimatePresence>
+                {matched.map((s, i) => (
+                  <SkillPill key={s} skill={s} type="matched" />
+                ))}
+              </AnimatePresence>
+            </div>
+          </motion.div>
 
-          {/* Missing skills */}
+          {/* Gap Analysis */}
           {missing.length > 0 && (
-            <div className="results-card">
-              <h2 className="card-title">
-                <XCircle size={15} color="var(--danger)" /> Skills to develop
-              </h2>
-              <div className="pill-wrap">
-                {visibleMissing.map(s => <SkillPill key={s} skill={s} type="missing" />)}
+            <motion.div variants={itemVariants} className="glass-card skills-card">
+              <div className="card-head">
+                <AlertCircle size={16} className="text-warning" />
+                <h3>Opportunity Gaps</h3>
+              </div>
+              <div className="skills-flex">
+                {visibleMissing.map((s, i) => (
+                  <SkillPill key={s} skill={s} type="missing" />
+                ))}
               </div>
               {missing.length > 8 && (
-                <button className="show-more-btn" onClick={() => setShowAllMissing(v => !v)}>
-                  {showAllMissing
-                    ? <><ChevronUp size={13} /> Show less</>
-                    : <><ChevronDown size={13} /> Show {missing.length - 8} more</>}
+                <button className="expand-btn" onClick={() => setShowAllMissing(!showAllMissing)}>
+                  {showAllMissing ? <ChevronUp size={14}/> : <ChevronDown size={14}/>}
+                  {showAllMissing ? 'Show Less' : `+${missing.length - 8} More`}
                 </button>
               )}
-            </div>
+            </motion.div>
           )}
         </div>
 
-        {/* Cover letter */}
-        <div className="results-card letter-card">
-          <div className="letter-header">
-            <h2 className="card-title"><Sparkles size={15} /> Cover letter</h2>
-            <div className="letter-actions">
-              <button className="action-btn" onClick={copyLetter}>
-                <Copy size={14} /> Copy
-              </button>
-              <button className="action-btn action-btn-primary" onClick={downloadLetter}>
-                <Download size={14} /> Download
-              </button>
+        {/* Main Content Area: Cover Letter */}
+        <div className="dashboard-main">
+          <motion.div variants={itemVariants} className="glass-card letter-dashboard-card">
+            <div className="letter-card-header">
+              <div className="head-left">
+                <FileText size={18} className="text-primary" />
+                <h3>Drafted Cover Letter</h3>
+              </div>
+              <div className="head-actions">
+                <button className="icon-action-btn" onClick={copyLetter} title="Copy Content">
+                  <Copy size={16} />
+                </button>
+                <button className="primary-action-btn" onClick={downloadLetter}>
+                  <Download size={16} />
+                  <span>Download PDF</span>
+                </button>
+              </div>
             </div>
-          </div>
-          <p className="letter-hint">You can edit the letter directly below.</p>
-          <textarea
-            className="letter-editor"
-            value={letter}
-            onChange={e => setLetter(e.target.value)}
-            spellCheck
-          />
+            
+            <div className="editor-container">
+              <div className="editor-toolbar">
+                <div className="dots">
+                  <span className="dot" />
+                  <span className="dot" />
+                  <span className="dot" />
+                </div>
+                <span className="editor-status">Ready to Review</span>
+              </div>
+              <textarea
+                className="modern-editor"
+                value={letter}
+                onChange={e => setLetter(e.target.value)}
+                spellCheck={false}
+              />
+            </div>
+          </motion.div>
         </div>
-
       </div>
-    </div>
+    </motion.div>
   )
 }
