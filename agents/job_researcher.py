@@ -10,20 +10,22 @@ key = os.getenv("GROQ_API_KEY")
 llm = ChatGroq(api_key=key , model="llama-3.1-8b-instant", temperature=0)
 
 FALLBACK_DESCRIPTION = (
-    "Software engineer role requiring Python, REST APIs, cloud platforms, "
-    "and collaborative problem solving in an Agile environment."
+    "A professional role requiring strong communication, problem-solving skills, "
+    "and relevant industry experience."
 )
 
 
 def _extract_skills_from_text(description: str) -> list:
     """Ask LLM to extract & normalize job skills from a description."""
-    prompt = f"""You are a job requirements parser. Extract ALL required and preferred technical skills from the job description below.
+    prompt = f"""You are a job requirements parser. Extract the key technical and professional skills required for this role from the description below.
 
-Normalize skill names to their full, common form (e.g. "AWS" → "Amazon Web Services (AWS)", "K8s" → "Kubernetes").
+STRICT GUIDELINES:
+1. Extract ONLY skills that are explicitly mentioned as requirements or preferences.
+2. Normalize skill names (e.g. "AWS" → "Amazon Web Services (AWS)").
+3. Do NOT include common industry buzzwords if they are not in the text.
 
-Return ONLY a valid JSON array of strings. No explanation, no markdown, no extra text.
-
-Example output: ["Python", "Microsoft Azure", "Kubernetes", "Agile", "REST APIs"]
+Return ONLY a valid JSON array of strings.
+Example: ["Skill 1", "Skill 2"]
 
 Job Description:
 {description}

@@ -58,16 +58,17 @@ SKILL MATCH ANALYSIS:
 - Skills to address positively: {", ".join(missing[:6]) if missing else "none"}
 
 INSTRUCTIONS:
-- Write a complete, professional cover letter addressed to the Hiring Manager
-- Use the applicant's REAL name, email, and phone — never use placeholders like [Your Name]
-- Fill the company name from context (job description or URL content); if unclear use "your organization"
-- In the opening paragraph, show genuine enthusiasm for the specific role/company
-- In the body, highlight 2–3 specific achievements or experiences from the resume that are most relevant
-- For missing skills, briefly acknowledge eagerness to grow in those areas — do NOT dwell on gaps
-- Keep tone confident, warm, and professional
-- Length: 3–4 paragraphs, no bullet points inside the letter
-- End with a clear call to action
-- Output ONLY the cover letter text — no preamble, no "here is your cover letter", no improvement notes
+- Write a complete, professional cover letter addressed to the Hiring Manager.
+- GROUNDING: Only mention skills and experiences that are explicitly found in the FULL RESUME provided. Do not invent achievements.
+- Use the applicant's REAL name, email, and phone — never use placeholders like [Your Name].
+- Fill the company name from context (job description or URL content); if unclear use "your organization".
+- In the opening paragraph, show genuine enthusiasm for the specific role/company.
+- In the body, highlight 2–3 specific achievements or experiences from the resume that are most relevant.
+- For missing skills, briefly acknowledge eagerness to grow in those areas — do NOT dwell on gaps.
+- Keep tone confident, warm, and professional.
+- Length: 3–4 paragraphs, no bullet points inside the letter.
+- End with a clear call to action.
+- Output ONLY the cover letter text — no preamble.
 """
 
     response = llm.invoke(prompt)

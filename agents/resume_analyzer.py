@@ -22,17 +22,21 @@ def resume_analyzer(state: dict) -> dict:
     personal_info = extract_personal_info(resume_text)
     state["personal_info"] = personal_info
 
-    prompt = f"""You are a resume parser. Extract ALL technical and professional skills from the resume below.
+    prompt = f"""You are a high-fidelity resume parser. Your goal is to extract a comprehensive list of technical and professional skills from the resume text provided.
 
-Include: programming languages, frameworks, tools, platforms, methodologies, soft skills relevant to tech roles.
-Normalize skill names (e.g. "MS Azure" → "Microsoft Azure", "AWS" → "Amazon Web Services (AWS)").
+STRICT GUIDELINES:
+1. Extract ONLY skills that are explicitly mentioned or clearly evidenced in the resume.
+2. DO NOT include common industry skills (like "Agile", "Docker", "REST APIs", "AWS") unless they are actually in the text.
+3. Include: programming languages, software tools, frameworks, technical platforms, and industry-specific certifications.
+4. Normalize name variations (e.g., "Javascript" to "JavaScript").
 
-Return ONLY a valid JSON array of strings. No explanation, no markdown, no extra text.
+Return ONLY a valid JSON array of strings.
+Example: ["Skill A", "Skill B", "Skill C"]
 
-Example output: ["Python", "Django", "REST APIs", "Docker", "Agile"]
-
-Resume:
+Resume Text:
+---
 {resume_text}
+---
 """
     response = llm.invoke(prompt)
 
