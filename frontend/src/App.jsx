@@ -24,13 +24,17 @@ export default function App() {
       <Toaster
         position="top-right"
         toastOptions={{
+          duration: 4000,
           style: {
             fontFamily: 'var(--font-body)',
             fontSize: '14px',
-            background: 'var(--surface)',
+            background: 'var(--bg-card)',
             color: 'var(--text-primary)',
-            border: '1px solid var(--border)',
-            boxShadow: 'var(--shadow-md)',
+            border: '1px solid var(--border-glass)',
+            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.08)',
+            backdropFilter: 'blur(12px)',
+            borderRadius: '12px',
+            padding: '12px 20px',
           }
         }}
       />

@@ -24,6 +24,7 @@
   justify-content: space-between;
   align-items: flex-end;
   gap: 24px;
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
 .results-header-info {
@@ -67,7 +68,7 @@
 }
 
 .restart-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.05);
   color: var(--text-primary);
   border-color: var(--border-active);
 }
@@ -89,6 +90,7 @@
 /* Cards */
 .stat-card {
   padding: 32px;
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards 0.1s;
 }
 
 .stat-header {
@@ -176,6 +178,7 @@
 /* Skills Card */
 .skills-card {
   padding: 24px;
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards 0.2s;
 }
 
 .card-head {
@@ -238,7 +241,7 @@
 }
 
 .expand-btn:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(0, 0, 0, 0.03);
   color: var(--text-secondary);
   border-color: var(--text-muted);
 }
@@ -250,7 +253,8 @@
   flex-direction: column;
   padding: 0;
   overflow: hidden;
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08); /* light theme shadow */
+  animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) backwards 0.3s;
 }
 
 .letter-card-header {
@@ -293,7 +297,7 @@
 }
 
 .icon-action-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.08);
   color: var(--text-primary);
 }
 
@@ -322,7 +326,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .editor-toolbar {
@@ -330,7 +334,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(0, 0, 0, 0.02);
   border-bottom: 1px solid var(--border-glass);
 }
 
