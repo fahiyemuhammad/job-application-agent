@@ -163,7 +163,7 @@ This runs the FastAPI backend and the React frontend together, giving you the fu
 uvicorn api:app --reload --port 8000
 ```
 
-**Terminal 2 — start the frontend:**
+**Terminal 2 — start the frontend**
 
 ```bash
 cd frontend
